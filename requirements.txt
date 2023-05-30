@@ -1,9 +1,0 @@
-    sudo apt install -y pip tk
-    sudo apt install -y pip opencv-contrib-python
-    sudo apt install -y pip datetime
-    sudo apt install -y pip pytest-shutil
-    sudo apt install -y pip python-csv
-    sudo apt install -y pip numpy
-    sudo apt install -y pip pillow 
-    sudo apt install -y pip pandas
-    sudo apt install -y pip times
