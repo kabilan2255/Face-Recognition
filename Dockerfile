@@ -9,6 +9,3 @@ RUN pip install numpy
 RUN pip install pillow
 RUN pip install pandas
 RUN pip install times
-WORKDIR /var/lib/jenkins/workspace/sample 
-COPY main.py ./
-CMD ["python", "main.py"]
