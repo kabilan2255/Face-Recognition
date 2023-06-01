@@ -1,1 +1,217 @@
 
+FROM python:3.8
+RUN pip install --upgrade pip
+RUN pip install tk-tools
+RUN pip install opencv-contrib-python
+RUN pip install datetime
+RUN pip install pytest-shutil
+RUN pip install python-csv
+RUN pip install numpy
+RUN pip install pillow
+RUN pip install pandas
+RUN pip install times
+CMD ["python", "main.py"]
+
+sudo systemctl start jenkins
+
+docker run -p 8080:80 kabilan2255/myimg:first
+
+stage ('Build Image') {
+   step {
+     script {
+       img= registry  + "${env.BUILD_ID}"
+       printIn ("${img}")
+       dockerImage=docker.build("${img}")
+}
+}
+
+stage ('Testing - running in jenkins node') {
+steps {
+     sh 'docker run -d --name ${JOB_NAME} -p 5000:5000 ${img}'
+}
+}
+
+/var/lib/jenkins/workspace/sample
+
+WORKDIR /usr/local/bin
+
+COPY main.py ./
+
+CMD [ "python", "./main.py"]
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+complete pipeline
+
+pipeline {
+    agent {
+        node {
+            label 'my_local_server'
+            customWorkspace '/projects/'
+        }
+    }
+    stages {
+        stage('Checkout project') {
+            steps {
+                script {
+                    git branch: "master",
+                        credentialsId: 'my-credentials',
+                        url: 'https://user@github.org/myproject/sample-repo.git'
+                }
+            }
+        }
+        stage('Installing packages') {
+            steps {
+                script {
+                    sh 'pip install -r requirements.txt'
+                }
+            }
+        }
+        stage('Static Code Checking') {
+            steps {
+                script {
+                    sh 'find . -name \\*.py | xargs pylint -f parseable | tee pylint.log'
+                    recordIssues(
+                        tool: pyLint(pattern: 'pylint.log'),
+                        unstableTotalHigh: 100,
+                    )
+                }
+            }
+        }
+        stage('Running Unit tests') {
+            steps {
+                script {
+                    sh 'pytest --with-xunit --xunit-file=pyunit.xml --cover-xml --cover-xml-file=cov.xml tests/*.py || true'
+                    step([$class: 'CoberturaPublisher', 
+                        coberturaReportFile: "cov.xml",
+                        onlyStable: false,
+                        failNoReports: true,
+                        failUnhealthy: false,
+                        failUnstable: false,
+                        autoUpdateHealth: true,
+                        autoUpdateStability: true,
+                        zoomCoverageChart: true,
+                        maxNumberOfBuilds: 10,
+                        lineCoverageTargets: '80, 80, 80',
+                        conditionalCoverageTargets: '80, 80, 80',
+                        classCoverageTargets: '80, 80, 80',
+                        fileCoverageTargets: '80, 80, 80',
+                    ])
+                    junit "pyunit.xml"
+                }
+            }
+        }
+    }
+}
+
+
+git clone https://github.com/kabilan2255/Face-Recognition.git
+
+docker login -u kabilan2255 -p Mkstrong@2255 docker.io
+docker push kabilan2255/myimg:first
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+cat <<-'JENKINSFILE' > Jenkinsfile
+pipeline {
+  agent { docker { image 'python:3.7.2' } }
+  stages {
+    stage('build') {
+      steps {
+        sh 'pip install -r requirements.txt'
+      }
+    }
+    stage('test') {
+      steps {
+        sh 'python test.py'
+      }   
+    }
+  }
+}
+JENKINSFILE
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+node{
+    stage('SCM Checkout'){
+        git 'https://github.com/kabilan2255/Face-Recognition.git'
+    }
+}
+   stage('Build Docker Image'){
+       git 'https://github.com/kabilan2255/Face-Recognition.git'
+       sh 'docker build -t kabilan2255/mynewimg .'
+    }
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+chmod 777 /var/run/docker.sock
+
+ stage('Build'){
+        sh 'python3 main.py'
+    }
+
+
+ stage('Build Docker container'){
+       sh 'docker exec -it python5 /bib/bash'
+    }
+}
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+stage('Remove Previous Container'){
+	try{
+		sh 'docker rm -f tomcattest'
+	}catch(error){
+		//  do nothing if there is an exception
+	}
+   stage('Docker deployment'){
+   sh 'docker run -d -p 8090:8080 --name tomcattest saidamo/myweb:0.0.2' 
+   }
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+node{
+   stage('SCM Checkout'){
+     git 'https://github.com/kabilan2255/my-app.git'
+   }
+   stage('Compile-Package'){
+
+      def mvnHome =  tool name: 'maven3', type: 'maven'   
+      sh "${mvnHome}/bin/mvn clean package"
+	  sh 'mv target/myweb*.war target/newapp.war'
+   }
+   stage('SonarQube Analysis') {
+	        def mvnHome =  tool name: 'maven3', type: 'maven'
+	        withSonarQubeEnv('sonar') { 
+	          sh "${mvnHome}/bin/mvn sonar:sonar"
+	        }
+	    }
+   stage('Build Docker Imager'){
+   sh 'docker build -t saidamo/myweb:0.0.2 .'
+   }
+   stage('Docker Image Push'){
+   withCredentials([string(credentialsId: 'dockerPass', variable: 'dockerPassword')]) {
+   sh "docker login -u saidamo -p ${dockerPassword}"
+    }
+   sh 'docker push saidamo/myweb:0.0.2'
+   }
+   stage('Nexus Image Push'){
+   sh "docker login -u admin -p admin123 18.223.209.232:8083"
+   sh "docker tag saidamo/myweb:0.0.2 18.223.209.232:8083/damo:1.0.0"
+   sh 'docker push 18.223.209.232:8083/damo:1.0.0'
+   }
+   stage('Remove Previous Container'){
+	try{
+		sh 'docker rm -f tomcattest'
+	}catch(error){
+		//  do nothing if there is an exception
+	}
+   stage('Docker deployment'){
+   sh 'docker run -d -p 8090:8080 --name tomcattest saidamo/myweb:0.0.2' 
+   }
+}
+}
+
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+
+FROM tomcat:8
+# Take the war and copy to webapps of tomcat
+COPY target/newapp.war /usr/local/tomcat/webapps/
